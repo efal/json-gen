@@ -1,0 +1,5 @@
+{
+  "name": "JSON & String Generator_2",
+  "description": "A developer tool to generate valid JSON using AI, validate existing JSON, and convert it into escaped JSON strings for use in code variables.",
+  "requestFramePermissions": []
+}
