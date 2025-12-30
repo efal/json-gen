@@ -15,6 +15,10 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+        manifestFilename: 'manifest.json',
+        devOptions: {
+          enabled: true
+        },
         manifest: {
           name: 'JSON-String Generator',
           short_name: 'JSG',
