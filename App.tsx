@@ -11,12 +11,14 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('generator');
   const [jsonContent, setJsonContent] = useState<string>('');
   const [jsonError, setJsonError] = useState<string | null>(null);
+  const [errorLine, setErrorLine] = useState<number | null>(null);
   const [isValid, setIsValid] = useState(false);
 
   // Validate JSON whenever content changes
   useEffect(() => {
     if (!jsonContent.trim()) {
       setJsonError(null);
+      setErrorLine(null);
       setIsValid(false);
       return;
     }
@@ -24,10 +26,24 @@ const App: React.FC = () => {
     try {
       JSON.parse(jsonContent);
       setJsonError(null);
+      setErrorLine(null);
       setIsValid(true);
     } catch (e: any) {
       setJsonError(e.message);
       setIsValid(false);
+
+      // Attempt to extract position from error message to find line number
+      // V8 (Chrome/Node) usually format: "Unexpected token X in JSON at position Y"
+      const match = e.message.match(/at position (\d+)/);
+      if (match) {
+        const position = parseInt(match[1], 10);
+        // Count newlines up to that position to determine line number
+        const linesToPos = jsonContent.substring(0, position).split('\n');
+        setErrorLine(linesToPos.length);
+      } else {
+        // Fallback or specific regex for other browsers if needed
+        setErrorLine(null);
+      }
     }
   }, [jsonContent]);
 
@@ -112,6 +128,7 @@ const App: React.FC = () => {
                   value={jsonContent} 
                   onChange={handleJsonChange} 
                   error={jsonError} 
+                  errorLine={errorLine}
                 />
               </div>
 
